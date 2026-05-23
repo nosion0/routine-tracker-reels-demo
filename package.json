@@ -42,6 +42,14 @@
     "vite": "^8.0.11",
     "wait-on": "^9.0.5"
   },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "better-sqlite3",
+      "electron",
+      "electron-winstaller",
+      "esbuild"
+    ]
+  },
   "build": {
     "appId": "im.manus.routinetracker",
     "productName": "루틴 트래커",
