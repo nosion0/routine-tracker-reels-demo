@@ -1,0 +1,104 @@
+{
+  "name": "routine-tracker",
+  "private": true,
+  "version": "1.0.0",
+  "description": "보라색 시네마틱 macOS 루틴 및 습관 트래커",
+  "author": "Manus",
+  "type": "module",
+  "main": "dist-main/main.cjs",
+  "scripts": {
+    "dev": "concurrently -k \"vite --host 127.0.0.1\" \"wait-on http://127.0.0.1:5173 && pnpm build:main && electron .\"",
+    "build:main": "esbuild src/main/main.ts src/main/preload.ts --bundle --platform=node --format=cjs --outdir=dist-main --out-extension:.js=.cjs --external:electron --external:better-sqlite3",
+    "build": "tsc -b && vite build && pnpm build:main",
+    "build:web": "tsc -b && vite build",
+    "pack:mac": "pnpm build && electron-builder --mac dmg --x64 --arm64",
+    "pack:linux": "pnpm build && electron-builder --linux AppImage --x64",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react": "latest",
+    "better-sqlite3": "^12.9.0",
+    "canvas-confetti": "^1.9.4",
+    "framer-motion": "^12.23.26",
+    "howler": "^2.2.4",
+    "lucide-react": "^0.555.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "recharts": "^3.5.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/canvas-confetti": "^1.9.0",
+    "@types/howler": "^2.2.12",
+    "@types/node": "latest",
+    "@types/react": "latest",
+    "@types/react-dom": "latest",
+    "concurrently": "^9.2.1",
+    "dmg-license": "^1.0.11",
+    "electron": "^28.3.3",
+    "electron-builder": "^26.8.1",
+    "esbuild": "^0.28.0",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.11",
+    "wait-on": "^9.0.5"
+  },
+  "build": {
+    "appId": "im.manus.routinetracker",
+    "productName": "루틴 트래커",
+    "copyright": "Copyright © 2026",
+    "directories": {
+      "output": "dist-release",
+      "buildResources": "build"
+    },
+    "files": [
+      "dist/**",
+      "dist-main/**",
+      "package.json"
+    ],
+    "asarUnpack": [
+      "node_modules/better-sqlite3/**"
+    ],
+    "npmRebuild": true,
+    "mac": {
+      "category": "public.app-category.productivity",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64",
+            "arm64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "background": "build/dmg-background.png",
+      "iconSize": 128,
+      "window": {
+        "width": 560,
+        "height": 360
+      },
+      "contents": [
+        {
+          "x": 160,
+          "y": 180,
+          "type": "file"
+        },
+        {
+          "x": 400,
+          "y": 180,
+          "type": "link",
+          "path": "/Applications"
+        }
+      ]
+    },
+    "linux": {
+      "target": "AppImage",
+      "icon": "build/icon.png",
+      "category": "Utility"
+    }
+  }
+}
